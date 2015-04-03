@@ -11,9 +11,11 @@ import javax.imageio.ImageIO;
 public class SpaceShip extends Sprite{
 
 	int step = 8;
+	private int hp;
 	private Image img;
-	public SpaceShip(int x, int y, int width, int height) {
+	public SpaceShip(int x, int y, int width, int height, int hp) {
 		super(x, y, width, height);
+		this.hp = hp;
 		try{
 			File file = new File("f2/image/spaceship.png");
 			img = ImageIO.read(file);
@@ -36,6 +38,12 @@ public class SpaceShip extends Sprite{
 			x = 0;
 		if(x > 400 - width)
 			x = 400 - width;
+	}
+	public int getHp(){
+		return hp;
+	}
+	public void crash(){
+		--hp;
 	}
 
 }
