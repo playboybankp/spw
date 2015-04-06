@@ -13,8 +13,8 @@ public class Enemy extends Sprite{
 	public static final int Y_TO_FADE = 400;
 	public static final int Y_TO_DIE = 600;
 	
-	private int step = 12;
-	private boolean alive = true;
+	protected int step = 12;
+	protected boolean alive = true;
 	private Image img;
 	public Enemy(int x, int y) {
 		super(x, y, 15, 20);

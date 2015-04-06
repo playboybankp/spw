@@ -14,8 +14,10 @@ import javax.swing.Timer;
 public class GameEngine implements KeyListener, GameReporter{
 	GamePanel gp;
 		
-	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();	
+	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	private SpaceShip v;	
+	private Bullet b;
 	
 	private Timer timer;
 	
@@ -49,12 +51,20 @@ public class GameEngine implements KeyListener, GameReporter{
 		enemies.add(e);
 	}
 	
+	private void generateBullet(){
+		b = new Bullet(v.getX()+(v.getWidth()/2),v.getY());
+		gp.sprites.add(b);
+		bullets.add(b);
+		
+	}
+	
 	private void process(){
 		if(Math.random() < difficulty){
 			generateEnemy();
 		}
 		
 		Iterator<Enemy> e_iter = enemies.iterator();
+		Iterator<Bullet> b_iter = bullets.iterator();
 		while(e_iter.hasNext()){
 			Enemy e = e_iter.next();
 			e.proceed();
@@ -64,13 +74,27 @@ public class GameEngine implements KeyListener, GameReporter{
 				gp.sprites.remove(e);
 				score += 100;
 			}
+			
+			while(b_iter.hasNext()){
+				b = b_iter.next();
+				b.proceed();
+				
+				if(!b.isAlive()){
+					b_iter.remove();
+					gp.sprites.remove(b);
+					score += 200;
+				}
+			}
+		
 		}
 		
 		gp.updateGameUI(this);
 		
 		Rectangle2D.Double vr = v.getRectangle();
+		Rectangle2D.Double br;
 		Rectangle2D.Double er;
 		for(Enemy e : enemies){
+			
 			er = e.getRectangle();
 			if(er.intersects(vr)){
 				e.crash();
@@ -79,6 +103,13 @@ public class GameEngine implements KeyListener, GameReporter{
 					gp.updateGameUI(this);
 					die();
 					return;
+				}
+			}
+			for(Bullet b : bullets){
+				br = b.getRectangle();
+				if(er.intersects(br)){
+					e.crash();
+					b.crash();
 				}
 			}
 		}
@@ -97,8 +128,17 @@ public class GameEngine implements KeyListener, GameReporter{
 		case KeyEvent.VK_RIGHT:
 			v.move(2);
 			break;
+		case KeyEvent.VK_UP:
+			v.moveForward(-2);
+			break;
+		case KeyEvent.VK_DOWN:
+			v.moveForward(+2);
+			break;
 		case KeyEvent.VK_D:
 			difficulty += 0.1;
+			break;
+		case KeyEvent.VK_Z:
+			generateBullet();
 			break;
 		}
 	}

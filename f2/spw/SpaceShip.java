@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class SpaceShip extends Sprite{
+public class SpaceShip extends Sprite {
 
 	int step = 8;
 	private int hp;
@@ -39,11 +39,29 @@ public class SpaceShip extends Sprite{
 		if(x > 400 - width)
 			x = 400 - width;
 	}
+	public void moveForward(int direction){
+		y += (step * direction);
+		if(y < 40)
+			y = 40;
+		if(y > 550 + height)
+			y = 550 + height;
+	}
 	public int getHp(){
 		return hp;
 	}
 	public void crash(){
 		--hp;
 	}
-
+	public int getX(){
+		return x;
+	}
+	public int getY(){
+		return y;
+	}
+	public int getHeight(){
+		return height;
+	}
+	public int getWidth(){
+		return width;
+	}
 }
