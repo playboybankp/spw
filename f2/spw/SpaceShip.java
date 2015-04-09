@@ -2,34 +2,24 @@ package f2.spw;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
+import javax.swing.Timer;
 
-public class SpaceShip extends Sprite {
+import org.omg.CORBA.PRIVATE_MEMBER;
 
-	int step = 8;
+public class SpaceShip extends Sprite{
+
+	private int step = 8;
 	private int hp;
-	private Image img;
+	private boolean invisible = false;
 	public SpaceShip(int x, int y, int width, int height, int hp) {
 		super(x, y, width, height);
 		this.hp = hp;
-		try{
-			File file = new File("f2/image/spaceship.png");
-			img = ImageIO.read(file);
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-		//g.setColor(Color.GREEN);
-		//g.fillRect(x, y, width, height);
-		g.drawImage(img, x, y, width, height, null);
-		
+		super.setImg("f2/image/spaceship.png");
 	}
 
 	public void move(int direction){
@@ -50,18 +40,28 @@ public class SpaceShip extends Sprite {
 		return hp;
 	}
 	public void crash(){
-		--hp;
+		if(invisible == false)
+			hp -= 1;
 	}
-	public int getX(){
-		return x;
+	public int centerX(){
+		return x + width/2;
 	}
-	public int getY(){
+	public int centerY(){
 		return y;
 	}
-	public int getHeight(){
-		return height;
+	public void getHeart(){
+		hp += 1;
 	}
-	public int getWidth(){
-		return width;
+	public void invisible(int delay){
+		invisible = true;
+		  ActionListener taskPerformer = new ActionListener() {
+		      @Override
+			public void actionPerformed(ActionEvent e) {
+				invisible = false;
+			}
+		  };
+		  new Timer(delay, taskPerformer).start();
+		
 	}
+
 }

@@ -20,7 +20,6 @@ public class GamePanel extends JPanel {
 	Graphics2D big;
 	ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 	
-	
 	public GamePanel() {
 		try{
 			File file = new File("f2/image/bg.jpg");

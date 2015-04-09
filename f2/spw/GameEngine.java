@@ -16,13 +16,14 @@ public class GameEngine implements KeyListener, GameReporter{
 		
 	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+	private ArrayList<Item> items = new ArrayList<Item>();
 	private SpaceShip v;	
-	private Bullet b;
 	
 	private Timer timer;
 	
 	private long score = 0;
 	private double difficulty = 0.1;
+	private double dropRate = 1 * difficulty;
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
 		this.gp = gp;
@@ -50,21 +51,37 @@ public class GameEngine implements KeyListener, GameReporter{
 		gp.sprites.add(e);
 		enemies.add(e);
 	}
-	
+	private void generateItem(int type){
+		Item i = null;
+		switch(type){
+		case 0 : i = new ItemHeart((int)(Math.random()*390), 30);
+				break;
+		case 1 : i = new ItemGiantShip((int)(Math.random()*390), 30);
+				break;
+		}
+		if(i != null){
+			gp.sprites.add(i);
+			items.add(i);
+		}
+		
+	}
 	private void generateBullet(){
-		b = new Bullet(v.getX()+(v.getWidth()/2),v.getY());
+		Bullet b = new Bullet(v.centerX(),v.centerY());
 		gp.sprites.add(b);
 		bullets.add(b);
 		
 	}
-	
 	private void process(){
 		if(Math.random() < difficulty){
 			generateEnemy();
 		}
+		if(Math.random() < dropRate){
+			generateItem((int)(Math.random()*10));
+		}
 		
 		Iterator<Enemy> e_iter = enemies.iterator();
 		Iterator<Bullet> b_iter = bullets.iterator();
+		Iterator<Item> i_iter = items.iterator();
 		while(e_iter.hasNext()){
 			Enemy e = e_iter.next();
 			e.proceed();
@@ -74,18 +91,25 @@ public class GameEngine implements KeyListener, GameReporter{
 				gp.sprites.remove(e);
 				score += 100;
 			}
-			
-			while(b_iter.hasNext()){
-				b = b_iter.next();
-				b.proceed();
+		}
+		while(b_iter.hasNext()){
+			Bullet b = b_iter.next();
+			b.proceed();
 				
-				if(!b.isAlive()){
-					b_iter.remove();
-					gp.sprites.remove(b);
-					score += 200;
-				}
+			if(!b.isAlive()){
+				b_iter.remove();
+				gp.sprites.remove(b);
+				score += 200;
 			}
-		
+		}
+		while(i_iter.hasNext()){
+			Item i = i_iter.next();
+			i.drop();
+				
+			if(!i.isAlive()){
+				i_iter.remove();
+				gp.sprites.remove(i);
+			}
 		}
 		
 		gp.updateGameUI(this);
@@ -93,6 +117,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		Rectangle2D.Double vr = v.getRectangle();
 		Rectangle2D.Double br;
 		Rectangle2D.Double er;
+		Rectangle2D.Double ir;
 		for(Enemy e : enemies){
 			
 			er = e.getRectangle();
@@ -110,6 +135,20 @@ public class GameEngine implements KeyListener, GameReporter{
 				if(er.intersects(br)){
 					e.crash();
 					b.crash();
+				}
+			}
+			
+		}
+		for(Item i : items){
+			ir = i.getRectangle();
+			if(vr.intersects(ir)){
+				if(i instanceof ItemHeart){
+					ItemHeart H = (ItemHeart)i;	
+					H.getHeart(v);
+				}
+				if(i instanceof ItemGiantShip){
+					ItemGiantShip G = (ItemGiantShip)i;
+					G.getGiantShip(v);
 				}
 			}
 		}
