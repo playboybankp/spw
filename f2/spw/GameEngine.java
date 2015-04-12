@@ -20,6 +20,7 @@ public class GameEngine implements KeyListener, GameReporter{
 	private SpaceShip v;	
 	
 	private Timer timer;
+	private Boolean play = true;
 	
 	private long score = 0;
 	private double difficulty = 0.1;
@@ -149,13 +150,15 @@ public class GameEngine implements KeyListener, GameReporter{
 				if(i instanceof ItemGiantShip){
 					ItemGiantShip G = (ItemGiantShip)i;
 					G.getGiantShip(v);
+					
 				}
 			}
 		}
 	}
 	
 	public void die(){
-		gp.GameOver();
+		play = false;
+		gp.gameOver();
 		timer.stop();
 	}
 	
@@ -179,6 +182,13 @@ public class GameEngine implements KeyListener, GameReporter{
 		case KeyEvent.VK_Z:
 			generateBullet();
 			break;
+		case KeyEvent.VK_P:
+			if(timer.isRunning()){
+				gp.pause();
+				timer.stop();
+			}
+			else timer.start();
+			break;
 		}
 	}
 
@@ -190,8 +200,9 @@ public class GameEngine implements KeyListener, GameReporter{
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
-		controlVehicle(e);
-		
+		if(play){
+			controlVehicle(e);
+		}
 	}
 
 	@Override

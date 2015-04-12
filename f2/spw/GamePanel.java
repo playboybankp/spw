@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel {
 	
 	private BufferedImage bi;
-	private Image bg,hp,go;
+	private Image bg,hp,go,pause;
 	String text = new String();
 	Graphics2D big;
 	ArrayList<Sprite> sprites = new ArrayList<Sprite>();
@@ -28,6 +28,8 @@ public class GamePanel extends JPanel {
 			hp = ImageIO.read(file2);
 			File file3 = new File("f2/image/go.gif");
 			go = ImageIO.read(file3);
+			File file4 = new File("f2/image/pause.png");
+			pause = ImageIO.read(file4);
 		}catch(IOException e){
 			e.printStackTrace();
 		}
@@ -57,8 +59,10 @@ public class GamePanel extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.drawImage(bi, null, 0, 0);
 	}
-	public void GameOver(){
+	public void gameOver(){
 		big.drawImage(go, 80, 280, null);
 	}
-
+	public void pause(){
+		big.drawImage(pause , 70 , 150 , null);
+	}
 }

@@ -16,8 +16,9 @@ public class SpaceShip extends Sprite{
 	private int step = 8;
 	private int hp;
 	private boolean invisible = false;
-	public SpaceShip(int x, int y, int width, int height, int hp) {
-		super(x, y, width, height);
+	private boolean giantState = false;
+	public SpaceShip(int x, int y, int hp) {
+		super(x, y, 30, 30);
 		this.hp = hp;
 		super.setImg("f2/image/spaceship.png");
 	}
@@ -52,16 +53,29 @@ public class SpaceShip extends Sprite{
 	public void getHeart(){
 		hp += 1;
 	}
-	public void invisible(int delay){
+	public void invisible(int delay, boolean state){
 		invisible = true;
+		if(!state){
+			width = 60;
+			height = 60;
+			giantState = true;
+			
+		}
 		  ActionListener taskPerformer = new ActionListener() {
 		      @Override
 			public void actionPerformed(ActionEvent e) {
+		    	if(getGiantState()){
+		  			width = 30;
+		  			height = 30;
+		  			giantState = false;
+		  		}
 				invisible = false;
 			}
 		  };
 		  new Timer(delay, taskPerformer).start();
 		
 	}
-
+	public boolean getGiantState(){
+		return giantState;
+	}
 }

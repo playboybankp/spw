@@ -7,7 +7,7 @@ public class ItemGiantShip extends Item {
 		super.setImg("f2/image/giantship.gif");
 	}
 	public void getGiantShip(SpaceShip v){
-		v.invisible(5000);
+		v.invisible(5000,v.getGiantState());
 		this.crash();
 	}
 }
