@@ -5,8 +5,12 @@ public class Item extends Sprite{
 	public Item(int x, int y,int width,int height) {
 		super(x,y,width,height);
 	}
-	public void drop(){
-		y += step;
+	public void drop(boolean speedState){
+		if(speedState)
+			y += step * 4;
+		else
+			y += step;
+		
 		if(y > 600){
 			alive = false;
 		}

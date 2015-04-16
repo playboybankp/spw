@@ -10,9 +10,12 @@ public class Enemy extends Sprite{
 		super.setImg("f2/image/enemyWarShip.png");
 	}
 
-
-	public void proceed(){
-		y += step;
+	public void proceed(boolean speedState){
+		if(speedState)
+			y += step * 4;
+		else
+			y += step;
+		
 		if(y > Y_TO_DIE){
 			alive = false;
 		}

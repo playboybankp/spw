@@ -64,5 +64,6 @@ public class GamePanel extends JPanel {
 	}
 	public void pause(){
 		big.drawImage(pause , 70 , 150 , null);
+		repaint();
 	}
 }

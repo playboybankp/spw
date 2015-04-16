@@ -24,7 +24,10 @@ public class GameEngine implements KeyListener, GameReporter{
 	
 	private long score = 0;
 	private double difficulty = 0.1;
-	private double dropRate = 1 * difficulty;
+	private double dropRate = 0.1 * difficulty;
+	private double originalDiff = 0.1;
+	private double maxDiff = 2;
+	private int selectBullet = 0;
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
 		this.gp = gp;
@@ -66,18 +69,30 @@ public class GameEngine implements KeyListener, GameReporter{
 		}
 		
 	}
-	private void generateBullet(){
-		Bullet b = new Bullet(v.centerX(),v.centerY());
+	private void generateBullet(int type){
+		Bullet b = null;
+		switch(type){
+			case 0 : b = new Bullet(v.centerX(),v.centerY());
+					break;
+			case 1 : b = new MissileBullet(v.centerX(),v.centerY());
+					break;
+		}
 		gp.sprites.add(b);
 		bullets.add(b);
 		
 	}
 	private void process(){
+		if(v.getInvisible())
+			difficulty = maxDiff;
+		else
+			difficulty = originalDiff;
+		
 		if(Math.random() < difficulty){
 			generateEnemy();
 		}
 		if(Math.random() < dropRate){
-			generateItem((int)(Math.random()*10));
+			if(!v.getInvisible())
+				generateItem((int)(Math.random()*10));
 		}
 		
 		Iterator<Enemy> e_iter = enemies.iterator();
@@ -85,7 +100,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		Iterator<Item> i_iter = items.iterator();
 		while(e_iter.hasNext()){
 			Enemy e = e_iter.next();
-			e.proceed();
+			e.proceed(v.getInvisible());
 			
 			if(!e.isAlive()){
 				e_iter.remove();
@@ -95,7 +110,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		}
 		while(b_iter.hasNext()){
 			Bullet b = b_iter.next();
-			b.proceed();
+			b.proceed(v.getInvisible());
 				
 			if(!b.isAlive()){
 				b_iter.remove();
@@ -105,7 +120,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		}
 		while(i_iter.hasNext()){
 			Item i = i_iter.next();
-			i.drop();
+			i.drop(v.getInvisible());
 				
 			if(!i.isAlive()){
 				i_iter.remove();
@@ -177,10 +192,15 @@ public class GameEngine implements KeyListener, GameReporter{
 			v.moveForward(+2);
 			break;
 		case KeyEvent.VK_D:
-			difficulty += 0.1;
+			if(difficulty < 2){
+				difficulty += 0.1;
+				originalDiff += 0.1;
+			}
+				
 			break;
 		case KeyEvent.VK_Z:
-			generateBullet();
+			if(!v.getInvisible())
+				generateBullet(selectBullet);
 			break;
 		case KeyEvent.VK_P:
 			if(timer.isRunning()){
@@ -188,6 +208,11 @@ public class GameEngine implements KeyListener, GameReporter{
 				timer.stop();
 			}
 			else timer.start();
+			break;
+		case KeyEvent.VK_X:
+			if(selectBullet == 0)
+				selectBullet = 1;
+			else selectBullet = 0;
 			break;
 		}
 	}

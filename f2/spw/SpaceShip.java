@@ -17,21 +17,26 @@ public class SpaceShip extends Sprite{
 	private int hp;
 	private boolean invisible = false;
 	private boolean giantState = false;
+	private Timer timer;
 	public SpaceShip(int x, int y, int hp) {
 		super(x, y, 30, 30);
 		this.hp = hp;
 		super.setImg("f2/image/spaceship.png");
 	}
-
+	
 	public void move(int direction){
-		x += (step * direction);
+		if(invisible)
+			x += (step * direction)*2;
+		else x += (step * direction);
 		if(x < 0)
 			x = 0;
 		if(x > 400 - width)
 			x = 400 - width;
 	}
 	public void moveForward(int direction){
-		y += (step * direction);
+		if(invisible)
+			y += (step * direction)*5;
+		else y += (step * direction);
 		if(y < 40)
 			y = 40;
 		if(y > 550 + height)
@@ -53,29 +58,40 @@ public class SpaceShip extends Sprite{
 	public void getHeart(){
 		hp += 1;
 	}
-	public void invisible(int delay, boolean state){
-		invisible = true;
-		if(!state){
-			width = 60;
-			height = 60;
-			giantState = true;
-			
-		}
-		  ActionListener taskPerformer = new ActionListener() {
+	public void invisible(int delay){
+		timer = new Timer(delay, new ActionListener() {
 		      @Override
 			public void actionPerformed(ActionEvent e) {
+		    	invisible = false;
 		    	if(getGiantState()){
-		  			width = 30;
-		  			height = 30;
-		  			giantState = false;
-		  		}
-				invisible = false;
-			}
-		  };
-		  new Timer(delay, taskPerformer).start();
+		    		getTiny();
+		    		giantState = false;
+		    	}
+		    	timer.stop();
+		  }
+		});
 		
+		invisible = true;
+		if(!getGiantState()){
+			getGiant();
+			giantState = true;
+			System.out.println("getGiant");
+		}
+		timer.start();
+
+	}
+	public void getGiant(){
+		width *= 2;
+		height *= 2;
+	}
+	public void getTiny(){
+		width /= 2;
+		height /= 2;
 	}
 	public boolean getGiantState(){
 		return giantState;
+	}
+	public boolean getInvisible(){
+		return invisible;
 	}
 }
