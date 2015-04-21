@@ -15,13 +15,14 @@ public class Sprite {
 	int width;
 	int height;
 	private Image img;
+	protected int ammo;
+	protected int missile;
 	protected boolean alive = true;
 	public Sprite(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		
 	}
 	
 	public void draw(Graphics2D g){
@@ -44,6 +45,5 @@ public class Sprite {
 	}
 	public void crash() {
 		alive = false;
-		
 	}
 }

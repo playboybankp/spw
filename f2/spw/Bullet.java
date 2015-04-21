@@ -1,23 +1,12 @@
 package f2.spw;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-
-public class Bullet extends Enemy {
-
+public abstract class Bullet extends Sprite{
+	protected int step = 12;
 	public Bullet(int x, int y) {
-		super(x, y);
-		super.setImg("f2/image/bullet.png");
+		super(x, y, 15, 20);
+		// TODO Auto-generated constructor stub
 	}
+	public abstract void shoot(boolean speedState);
 	
-	public void proceed(boolean speedState){
-		if(speedState)
-			y -= step * 4;
-		else
-			y -= step;
-		if(y < 0){
-			alive = false;
-		}
-	}
-
+	
 }

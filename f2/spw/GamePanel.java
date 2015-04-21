@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel {
 	
 	private BufferedImage bi;
-	private Image bg,hp,go,pause;
+	private Image bg,hp,go,pause,circle,bullet1,bullet2;
 	String text = new String();
 	Graphics2D big;
 	ArrayList<Sprite> sprites = new ArrayList<Sprite>();
@@ -30,15 +30,18 @@ public class GamePanel extends JPanel {
 			go = ImageIO.read(file3);
 			File file4 = new File("f2/image/pause.png");
 			pause = ImageIO.read(file4);
+			File file5 = new File("f2/image/circle.png");
+			circle = ImageIO.read(file5);
+			File file6 = new File("f2/image/bullet.png");
+			bullet1 = ImageIO.read(file6);
+			File file7 = new File("f2/image/missile.gif");
+			bullet2 = ImageIO.read(file7);
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 		bi = new BufferedImage(400, 600, BufferedImage.TYPE_INT_ARGB);
 		big = (Graphics2D) bi.getGraphics();
-		big.drawImage(bg, 0, 0, null);
-		big.drawImage(hp, 20, 10, null);
-	}
-
+}
 	public void updateGameUI(GameReporter reporter){
 		big.clearRect(0, 0, 400, 600);
 		big = (Graphics2D) bi.getGraphics();
@@ -64,6 +67,16 @@ public class GamePanel extends JPanel {
 	}
 	public void pause(){
 		big.drawImage(pause , 70 , 150 , null);
+		repaint();
+	}
+	public void bulletInfo(int bullet_type){
+		//big.drawImage(circle , 15,250 , null);
+		if(bullet_type == 1){
+			big.drawImage(bullet1,30,100,null);
+		}
+		else{
+			big.drawImage(bullet2,30,100,null);
+		}
 		repaint();
 	}
 }

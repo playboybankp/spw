@@ -27,7 +27,11 @@ public class GameEngine implements KeyListener, GameReporter{
 	private double dropRate = 0.1 * difficulty;
 	private double originalDiff = 0.1;
 	private double maxDiff = 2;
-	private int selectBullet = 0;
+	private int selectBullet = 1;
+
+	private boolean s1;
+	private boolean s2;
+	int i,j;
 	
 	public GameEngine(GamePanel gp, SpaceShip v) {
 		this.gp = gp;
@@ -58,9 +62,11 @@ public class GameEngine implements KeyListener, GameReporter{
 	private void generateItem(int type){
 		Item i = null;
 		switch(type){
-		case 0 : i = new ItemHeart((int)(Math.random()*390), 30);
+		case 1 : i = new ItemHeart((int)(Math.random()*390), 30);
 				break;
-		case 1 : i = new ItemGiantShip((int)(Math.random()*390), 30);
+		case 2 : i = new ItemGiantShip((int)(Math.random()*390), 30);
+				break;
+		case 3 : i = new ItemAmmo((int)(Math.random()*390), 30);
 				break;
 		}
 		if(i != null){
@@ -72,16 +78,19 @@ public class GameEngine implements KeyListener, GameReporter{
 	private void generateBullet(int type){
 		Bullet b = null;
 		switch(type){
-			case 0 : b = new Bullet(v.centerX(),v.centerY());
+			case 0 : b = new SpaceShipBullet(v.centerX()-7,v.centerY());
 					break;
-			case 1 : b = new MissileBullet(v.centerX(),v.centerY());
+			case 1 : b = new MissileBullet(v.centerX()-7,v.centerY());
 					break;
 		}
-		gp.sprites.add(b);
-		bullets.add(b);
+		if(b != null){
+			gp.sprites.add(b);
+			bullets.add(b);
+		}
 		
 	}
 	private void process(){
+		gp.bulletInfo(selectBullet);
 		if(v.getInvisible())
 			difficulty = maxDiff;
 		else
@@ -92,7 +101,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		}
 		if(Math.random() < dropRate){
 			if(!v.getInvisible())
-				generateItem((int)(Math.random()*10));
+				generateItem((int)(Math.random()*5));
 		}
 		
 		Iterator<Enemy> e_iter = enemies.iterator();
@@ -110,7 +119,7 @@ public class GameEngine implements KeyListener, GameReporter{
 		}
 		while(b_iter.hasNext()){
 			Bullet b = b_iter.next();
-			b.proceed(v.getInvisible());
+			b.shoot(v.getInvisible());
 				
 			if(!b.isAlive()){
 				b_iter.remove();
@@ -167,6 +176,10 @@ public class GameEngine implements KeyListener, GameReporter{
 					G.getGiantShip(v);
 					
 				}
+				if(i instanceof ItemAmmo){
+					ItemAmmo A = (ItemAmmo)i;
+					A.fill_ammo(v);
+				}
 			}
 		}
 	}
@@ -196,11 +209,13 @@ public class GameEngine implements KeyListener, GameReporter{
 				difficulty += 0.1;
 				originalDiff += 0.1;
 			}
-				
 			break;
 		case KeyEvent.VK_Z:
-			if(!v.getInvisible())
+			if(!v.getInvisible() && (v.getAmmo(selectBullet) > 0)){
+//				System.out.println(v.getAmmo(selectBullet));
+				v.shootBullet(selectBullet);
 				generateBullet(selectBullet);
+			}
 			break;
 		case KeyEvent.VK_P:
 			if(timer.isRunning()){
@@ -210,9 +225,12 @@ public class GameEngine implements KeyListener, GameReporter{
 			else timer.start();
 			break;
 		case KeyEvent.VK_X:
-			if(selectBullet == 0)
+			if(selectBullet == 0){
 				selectBullet = 1;
-			else selectBullet = 0;
+			}
+			else {
+				selectBullet = 0;
+			}
 			break;
 		}
 	}
@@ -233,10 +251,20 @@ public class GameEngine implements KeyListener, GameReporter{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		//do nothing
+		 if(i==e.getKeyCode())
+	        {
+	            s1=false;
+	        }
+
+	        if(j==e.getKeyCode())
+	        {
+	            s2=false;
+	        }
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		//do nothing		
+		//do nothing	
+		
 	}
 }

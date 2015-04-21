@@ -1,26 +1,22 @@
 package f2.spw;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.Delayed;
-import java.util.concurrent.TimeUnit;
-
 import javax.swing.Timer;
 
-import org.omg.CORBA.PRIVATE_MEMBER;
-
 public class SpaceShip extends Sprite{
-
 	private int step = 8;
 	private int hp;
 	private boolean invisible = false;
 	private boolean giantState = false;
+	int missile;
+	int ammo;
 	private Timer timer;
-	public SpaceShip(int x, int y, int hp) {
+	public SpaceShip(int x, int y, int hp, int ammo) {
 		super(x, y, 30, 30);
 		this.hp = hp;
+		this.ammo = ammo;
+		missile = 0;
 		super.setImg("f2/image/spaceship.png");
 	}
 	
@@ -70,7 +66,6 @@ public class SpaceShip extends Sprite{
 		    	timer.stop();
 		  }
 		});
-		
 		invisible = true;
 		if(!getGiantState()){
 			getGiant();
@@ -78,7 +73,6 @@ public class SpaceShip extends Sprite{
 			System.out.println("getGiant");
 		}
 		timer.start();
-
 	}
 	public void getGiant(){
 		width *= 2;
@@ -93,5 +87,28 @@ public class SpaceShip extends Sprite{
 	}
 	public boolean getInvisible(){
 		return invisible;
+	}
+	public int getAmmo(int ammo_type){
+		switch(ammo_type){
+		case 0 : return ammo;
+		case 1 : return missile;
+		}
+		return 0;
+	}
+	public void fillAmmo(int ammo_type,int ammo){
+		switch(ammo_type){
+			case 0 : this.ammo += ammo;
+					break;
+			case 1 : this.missile += ammo;
+					break;
+		}
+	}
+	public void shootBullet(int ammo_type){
+		switch(ammo_type){
+		case 0 : --ammo;
+				break;
+		case 1 : --missile;
+				break;
+		}
 	}
 }
