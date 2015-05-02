@@ -1,5 +1,8 @@
 package f2.spw;
 
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.Rectangle2D.Double;
+
 public class MissileBullet extends SpaceShipBullet {
 
 	public MissileBullet(int x, int y) {
@@ -14,5 +17,8 @@ public class MissileBullet extends SpaceShipBullet {
 		if(y < 0){
 			alive = false;
 		}
+	}
+	public Double getRectangle(int width,int height) {
+		return new Rectangle2D.Double(x, y, width, height);
 	}
 }

@@ -7,13 +7,13 @@ public class ItemAmmo extends Item{
 		super.setImg("f2/image/ammo.png");
 	}
 	public void fill_ammo(SpaceShip v){
-		int ammo_type = (int)(Math.random()*10);
+		int ammo_type = (int)(Math.random()*3);
 		System.out.println("type"+ammo_type);
 		switch(ammo_type){
-			case 1 : v.fillAmmo(1,(int)(Math.random()*3));
+			case 1 : v.fillAmmo(1,(int)(Math.random()*10)+1);
 					System.out.println("Missile" + v.getAmmo(2));
 					break;
-			default : v.fillAmmo(0,(int)(Math.random()*20));
+			default : v.fillAmmo(0,(int)(Math.random()*50)+1);
 					System.out.println("Ammo" + v.getAmmo(1));
 			break;
 		}

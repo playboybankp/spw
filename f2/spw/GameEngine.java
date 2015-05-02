@@ -8,12 +8,12 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.swing.JDesktopPane;
 import javax.swing.Timer;
 
 
 public class GameEngine implements KeyListener, GameReporter{
 	GamePanel gp;
-		
 	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	private ArrayList<Item> items = new ArrayList<Item>();
@@ -24,7 +24,7 @@ public class GameEngine implements KeyListener, GameReporter{
 	
 	private long score = 0;
 	private double difficulty = 0.1;
-	private double dropRate = 0.1 * difficulty;
+	private double dropRate = 1 * difficulty;
 	private double originalDiff = 0.1;
 	private double maxDiff = 2;
 	private int selectBullet = 1;
@@ -66,7 +66,7 @@ public class GameEngine implements KeyListener, GameReporter{
 				break;
 		case 2 : i = new ItemGiantShip((int)(Math.random()*390), 30);
 				break;
-		case 3 : i = new ItemAmmo((int)(Math.random()*390), 30);
+		default : i = new ItemAmmo((int)(Math.random()*390), 30);
 				break;
 		}
 		if(i != null){
@@ -156,14 +156,13 @@ public class GameEngine implements KeyListener, GameReporter{
 				}
 			}
 			for(Bullet b : bullets){
-				br = b.getRectangle();
+				br = b.getRectangle();	
 				if(er.intersects(br)){
 					e.crash();
 					b.crash();
 				}
 			}
 			
-		}
 		for(Item i : items){
 			ir = i.getRectangle();
 			if(vr.intersects(ir)){
@@ -182,14 +181,19 @@ public class GameEngine implements KeyListener, GameReporter{
 				}
 			}
 		}
+		}
 	}
-	
 	public void die(){
-		play = false;
-		gp.gameOver();
+//		play = false;
+		PopUp frame2 = new PopUp();
+		frame2.setVisible(true);
 		timer.stop();
 	}
-	
+	public void popup(){
+	}
+	public boolean play(){
+		return play;
+	}
 	void controlVehicle(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_LEFT:
