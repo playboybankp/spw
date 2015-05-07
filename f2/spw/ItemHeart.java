@@ -6,7 +6,8 @@ public class ItemHeart extends Item{
 		super.setImg("f2/image/heart.gif");
 	}
 	public void getHeart(SpaceShip v){
-		v.getHeart();
 		this.crash();
+		v.getHeart();
+		
 	}
 }

@@ -1,40 +1,60 @@
 package f2.spw;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JFrame;
-import javax.swing.JDesktopPane;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
+
+import javax.swing.*;
 
 public class PopUp extends JFrame {
-	JDesktopPane jdpDesktop;
-	static int openFrameCount = 0;
+	private JPanel panel;
+	private JButton button,button2;
+	private JLabel text,text2;
+	private boolean close = false;
 	public PopUp() {
 		super("Space Ship War");
 		// Make the main window positioned as 50 pixels from each edge of the
 		// screen.
 		int inset = 60;
 		setBounds(inset, inset, 250, 250);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Add a Window Exit Listener
 		addWindowListener(new WindowAdapter() {
-
 			public void windowClosing(WindowEvent e) {
-				System.exit(0);
+				dispose();
 			}
 		});
 		// Create and Set up the GUI.
-		jdpDesktop = new JDesktopPane();
-		setContentPane(jdpDesktop);
-		setJMenuBar(createMenuBar());
-		// Make dragging faster by setting drag mode to Outline
-		jdpDesktop.putClientProperty("JDesktopPane.dragMode", "outline");
+		panel = new JPanel();
+		button = new JButton("Replay");
+		button2 = new JButton("Close");
+		text2 = new JLabel("Play again??");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("New Main");
+				new Main();
+				dispose();
+			}
+		});
+		button2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+				close = true;
+			}
+		});
+		panel.setLayout(new BorderLayout());
+		panel.add(text2,BorderLayout.CENTER);
+		panel.add(button,BorderLayout.WEST);
+		panel.add(button2,BorderLayout.EAST);
+		setContentPane(panel);
 	}
-	protected JMenuBar createMenuBar() {
-		System.out.println("Get In JMenu");
-		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("Frame");
-		menuBar.add(menu);
-		return menuBar;
+	public void setScore(long score){
+		text = new JLabel("Your Score is " + score + "!!!");
+		panel.add(text,BorderLayout.NORTH);
+	}
+	public boolean getClose(){
+		return close;
 	}
 }

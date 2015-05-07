@@ -8,12 +8,12 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.JDesktopPane;
 import javax.swing.Timer;
 
 
 public class GameEngine implements KeyListener, GameReporter{
 	GamePanel gp;
+	PopUp pop;
 	private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	private ArrayList<Item> items = new ArrayList<Item>();
@@ -24,19 +24,17 @@ public class GameEngine implements KeyListener, GameReporter{
 	
 	private long score = 0;
 	private double difficulty = 0.1;
-	private double dropRate = 1 * difficulty;
+	private double dropRate = 0.1 * difficulty;
 	private double originalDiff = 0.1;
 	private double maxDiff = 2;
-	private int selectBullet = 1;
+	private int selectBullet = 0;
 
-	private boolean s1;
-	private boolean s2;
 	int i,j;
 	
-	public GameEngine(GamePanel gp, SpaceShip v) {
+	public GameEngine(GamePanel gp, SpaceShip v ,PopUp pop) {
 		this.gp = gp;
 		this.v = v;		
-		
+		this.pop = pop;
 		gp.sprites.add(v);
 		
 		timer = new Timer(50, new ActionListener() {
@@ -114,7 +112,6 @@ public class GameEngine implements KeyListener, GameReporter{
 			if(!e.isAlive()){
 				e_iter.remove();
 				gp.sprites.remove(e);
-				score += 100;
 			}
 		}
 		while(b_iter.hasNext()){
@@ -124,7 +121,6 @@ public class GameEngine implements KeyListener, GameReporter{
 			if(!b.isAlive()){
 				b_iter.remove();
 				gp.sprites.remove(b);
-				score += 200;
 			}
 		}
 		while(i_iter.hasNext()){
@@ -149,6 +145,7 @@ public class GameEngine implements KeyListener, GameReporter{
 			if(er.intersects(vr)){
 				e.crash();
 				v.crash();
+				score += 100;
 				if(v.getHp() <= 0){
 					gp.updateGameUI(this);
 					die();
@@ -160,39 +157,37 @@ public class GameEngine implements KeyListener, GameReporter{
 				if(er.intersects(br)){
 					e.crash();
 					b.crash();
+					score += 200;
 				}
 			}
-			
-		for(Item i : items){
-			ir = i.getRectangle();
-			if(vr.intersects(ir)){
-				if(i instanceof ItemHeart){
-					ItemHeart H = (ItemHeart)i;	
-					H.getHeart(v);
-				}
-				if(i instanceof ItemGiantShip){
-					ItemGiantShip G = (ItemGiantShip)i;
-					G.getGiantShip(v);
-					
-				}
-				if(i instanceof ItemAmmo){
-					ItemAmmo A = (ItemAmmo)i;
-					A.fill_ammo(v);
+			for(Item i : items){
+				ir = i.getRectangle();
+				if(vr.intersects(ir)){
+					if(i instanceof ItemHeart){
+						ItemHeart H = (ItemHeart)i;	
+						H.getHeart(v);
+					}
+					if(i instanceof ItemGiantShip){
+						ItemGiantShip G = (ItemGiantShip)i;
+						G.getGiantShip(v);
+					}
+					if(i instanceof ItemAmmo){
+						ItemAmmo A = (ItemAmmo)i;
+						A.fill_ammo(v);
+					}
 				}
 			}
-		}
 		}
 	}
 	public void die(){
-//		play = false;
-		PopUp frame2 = new PopUp();
-		frame2.setVisible(true);
+		play = false;
+		System.out.println("Score =  "+ score );
+		pop.setScore(getScore());
+		pop.setVisible(true);
 		timer.stop();
 	}
-	public void popup(){
-	}
-	public boolean play(){
-		return play;
+	public boolean getPlay(){
+		return pop.getClose();
 	}
 	void controlVehicle(KeyEvent e) {
 		switch (e.getKeyCode()) {
@@ -255,15 +250,6 @@ public class GameEngine implements KeyListener, GameReporter{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		//do nothing
-		 if(i==e.getKeyCode())
-	        {
-	            s1=false;
-	        }
-
-	        if(j==e.getKeyCode())
-	        {
-	            s2=false;
-	        }
 	}
 
 	@Override

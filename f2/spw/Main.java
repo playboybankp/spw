@@ -3,22 +3,26 @@ package f2.spw;
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
-public class Main {
+public class Main extends JFrame {
 
-	public static void main(String[] args){
+	public Main(){
+		super("Space War");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(400, 640); // change from 400,650
+		getContentPane().setLayout(new BorderLayout());
 		
-		JFrame frame = new JFrame("Space War");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(400, 640); // change from 400,650
-		frame.getContentPane().setLayout(new BorderLayout());
-		
+		PopUp pop = new PopUp();
 		SpaceShip v = new SpaceShip(180, 550, 3 , 20);
 		GamePanel gp = new GamePanel();
-		GameEngine engine = new GameEngine(gp, v);
-		frame.addKeyListener(engine);
-		frame.getContentPane().add(gp, BorderLayout.CENTER);
-		frame.setVisible(true);
+		GameEngine engine = new GameEngine(gp,v,pop);
+		addKeyListener(engine);
+		getContentPane().add(gp, BorderLayout.CENTER);
+		setVisible(true);
 		
 		engine.start();
+		
+	}
+	public static void main(String[] args){
+		new Main();
 	}
 }

@@ -7,6 +7,4 @@ public abstract class Bullet extends Sprite{
 		// TODO Auto-generated constructor stub
 	}
 	public abstract void shoot(boolean speedState);
-	
-	
 }
